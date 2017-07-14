@@ -6,8 +6,6 @@
  * Time: 14:00
  */
 
-//require_once ('config/config.php');
-//require_once ('include/ts3admin.class.php');
 
 function poke()
 {
@@ -30,7 +28,7 @@ function poke()
                     if (isInGroup($user_group_id, $config['poke']['group'])) {
                         if($time['interval'] < time()) {
                             $ts3->clientPoke($users['clid'], "Ktoś czeka na kanale POMOCY !");
-                            $time['interval'] = time()+10;
+                            $time['interval'] = time()+$config['poke']['interval'];
 
                         }
                 }
@@ -41,15 +39,12 @@ function poke()
 
 
     }
-    else{
-        $count=0;
-    }
 
-    print_r($time);
+    //print_r($time);
 
     unset($ts3);
     unset($config);
-    unset($count);
+    unset($time);
     unset($clients);
     unset($channel);
     unset($users);
