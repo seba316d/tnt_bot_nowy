@@ -15,19 +15,17 @@ function checkchannel(){
     $channel_list = $ts3->getElement('data',$ts3->channelList('-topic -flags -voice -limits -icon'));
     $channel_group_list = $ts3->getElement('data',$ts3->channelGroupClientList());
 
-
-    foreach ($channel_list as $channels)
-    {
-            if ($channels['pid'] == $config['create_channel']['zone']) {
-                //Pobieranie daty z kanału
-                $data_kanal = strtotime($channels['channel_topic']);
-                $data_kanal_max = strtotime('+6 days', $data_kanal);
-                $obecna_data = time();
+    if ($time['interval'] < time()) {
+        foreach ($channel_list as $channels) {
+                if ($channels['pid'] == $config['create_channel']['zone']) {
+                    //Pobieranie daty z kanału
+                    $data_kanal = strtotime($channels['channel_topic']);
+                    $data_kanal_max = strtotime('+6 days', $data_kanal);
+                    $obecna_data = time();
 
                 // Sprawdznie czy data nie jest za stara jak tak to zmieniamy kanał na wolny
-                if($channels['channel_topic'] != "wolny"){
-                    if ($data_kanal_max <= $obecna_data) {
-                        if ($time['interval'] < time()) {
+                    if ($channels['channel_topic'] != "wolny") {
+                        if ($data_kanal_max <= $obecna_data) {
                             $channel_name = (integer)$channels['channel_name'];
                             $data = array(
                                 'channel_name' => $channel_name . ".wolny",
@@ -38,30 +36,25 @@ function checkchannel(){
                             remove_group($channel_group_list, $channels['cid'], $config, $ts3);
                             delete_sub_channel($channel_list, $channels['cid'], $ts3);
                             $time['interval'] = time() + $config['create_channel']['interval'];
-                        }
-                    }
-                    else // Jeżeli data jest stara aktualizuje date
-                    {
-
-                        if($channels['total_clients'] > 0 || check_sub_channel($channel_list,$channels['cid']) )
+                        } else // Jeżeli data jest stara aktualizuje date
                         {
-                            if($channels['channel_topic'] < date('d.m.Y',time()) )
-                            {
-                                $data = array(
-                                    'CHANNEL_TOPIC' => date('d.m.Y')
-                                );
 
-                                $ts3->channelEdit($channels['cid'], $data);
+                            if ($channels['total_clients'] > 0 || check_sub_channel($channel_list, $channels['cid'])) {
+                                if ($channels['channel_topic'] < date('d.m.Y', time())) {
+                                    $data = array(
+                                        'CHANNEL_TOPIC' => date('d.m.Y')
+                                    );
+
+                                    $ts3->channelEdit($channels['cid'], $data);
+                                }
                             }
+                            $time['interval'] = time() + $config['create_channel']['interval'];
                         }
-
                     }
                 }
             }
+
     }
-
-
-
 
 }
 

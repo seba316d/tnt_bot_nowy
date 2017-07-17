@@ -19,16 +19,17 @@ function createchannel()
 
 
     foreach ($client_list as $cldbi) {
-        $czy_topic_wolny = czy_topic_wolny($channel_list,$config);
-        $czy_ma_kanal = czy_ma_kanal($cldbi['client_database_id'], $channel_admin_list);
-        $numer_kanalu = numer_kanalu($channel_list,$config);
+
 
 
         //Sprawdza czy mamy juz kanal
         if ($cldbi['cid'] == $config['create_channel']['channel']) { // sprawdzam czy uzytkownik siedzi na kanale "stworz kanal"
 
+            $czy_topic_wolny = czy_topic_wolny($channel_list,$config);
+            $czy_ma_kanal = czy_ma_kanal($cldbi['client_database_id'], $channel_admin_list);
+            $numer_kanalu = numer_kanalu($channel_list,$config);
+
             if ($czy_ma_kanal['odpowiedz']) {
-                echo "lalla - sprawdza kanal";
                 $ts3->sendMessage(1, $cldbi['clid'], "Posiadaz juz kanał na tym TS!!");
                 $ts3->clientMove($cldbi['clid'], $czy_ma_kanal['channel_id']);
                 $ts3->sendMessage(1, $cldbi['clid'], "Zostales przeniesiony na swoj kanal. Milej zabawy");
@@ -46,7 +47,7 @@ function createchannel()
                         'CHANNEL_TOPIC' => date('d.m.Y')
                     );
 
-                    echo $channel_edit = $ts3->getElement('data', $ts3->channelEdit($czy_topic_wolny['channel_id'], $data));
+                    $ts3->getElement('data', $ts3->channelEdit($czy_topic_wolny['channel_id'], $data));
 
                     if ($config['create_channel']['sub-channel_create']) {
                         for ($i = 0; $i < $config['create_channel']['sub-channel']; $i++) {

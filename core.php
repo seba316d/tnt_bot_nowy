@@ -22,7 +22,7 @@ $ts3->setName($config['bot']['name']);
 $users = $ts3->getElement('data',$ts3->clientList('-groups -voice -away -times -uid'));
 
 $count = 0;
-//while (true) {
+while (true) {
     $core = $ts3->getElement('data', $ts3->whoAmI());
     //$ts3->clientMove($core['client_id'], $config['bot']['default_channel']);
 
@@ -33,7 +33,7 @@ $count = 0;
     createchannel();
     checkchannel();
 
-//}
+}
 
 	/*
 	if($count >= 1000){
